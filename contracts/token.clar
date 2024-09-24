@@ -55,3 +55,20 @@
         )
     )
 )
+
+(define-public (buy-item (id uint))
+    (let ((item-info (map-get? items { id: id })))
+        (match item-info
+            item
+            (if (== (get status item) u0)
+                (begin
+                    (contract-call? .token-contract transfer tx-sender (get seller item) (get price item))
+                    (map-set items { id: id } { seller: (get seller item), price: (get price item), status: u1, highest-bid: u0, highest-bidder: tx-sender, end-time: u0 })
+                    (ok true)
+                )
+                (err u2) ;; Item not available for sale
+            )
+            (err u1) ;; Item not found
+        )
+    )
+)
