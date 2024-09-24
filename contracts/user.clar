@@ -17,3 +17,23 @@
         )
     )
 )
+
+
+(define-map access-control
+    { user: principal }
+    { has-access: bool })
+
+(define-public (check-access (user principal))
+    (let ((current-reputation (map-get? user-reputation { user: user })))
+        (if (and (is-ok current-reputation) (>= (get rating (unwrap current-reputation)) u4)) ;; Assuming 4 is the threshold for access
+            (begin
+                (map-set access-control { user: user } { has-access: true })
+                (ok true)
+            )
+            (begin
+                (map-set access-control { user: user } { has-access: false })
+                (ok false)
+            )
+        )
+    )
+)
