@@ -21,3 +21,14 @@
         )
     )
 )
+
+(define-map arbitrators
+    { item-id: uint }
+    { arbitrator: principal })
+
+(define-public (assign-arbitrator (item-id uint) (arbitrator principal))
+    (begin
+        (map-set arbitrators { item-id: item-id } { arbitrator: arbitrator })
+        (ok true)
+    )
+)
