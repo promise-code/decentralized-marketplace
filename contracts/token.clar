@@ -7,6 +7,7 @@
     (ok true)
 )
 
+;; Refactor bid validation in `bid-item` to ensure only valid bids are accepted
 (define-public (bid-item (id uint) (amount uint))
     (let ((item-info (map-get? items { id: id })))
         (match item-info
@@ -27,6 +28,7 @@
         )
     )
 )
+
 
 
 (define-public (end-auction (id uint))
