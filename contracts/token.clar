@@ -59,6 +59,7 @@
 )
 
 
+;; Ensure that `buy-item` only allows purchasing of items that are available for sale
 (define-public (buy-item (id uint))
     (let ((item-info (map-get? items { id: id })))
         (match item-info
