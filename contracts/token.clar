@@ -24,10 +24,16 @@
                 (begin
                     ;; Refund the previous highest bidder
                     (if (not (is-eq (get highest-bid item) u0))
-                        (contract-call? .token-contract transfer (get highest-bidder item) (tx-sender) (get highest-bid item))
+                        (contract-call? .token-contract transfer (get highest-bidder item) tx-sender (get highest-bid item))
                     )
                     ;; Update the highest bid and bidder
-                    (map-set items { id: id } { seller: (get seller item), price: (get price item), status: u0, highest-bid: amount, highest-bidder: tx-sender, end-time: (get end-time item) })
+                    (map-set items { id: id } 
+                        { seller: (get seller item), 
+                          price: (get price item), 
+                          status: u0, 
+                          highest-bid: amount, 
+                          highest-bidder: tx-sender, 
+                          end-time: (get end-time item) })
                     (ok true)
                 )
                 (err u2) ;; Invalid bid
@@ -47,12 +53,24 @@
                     (if (> (get highest-bid item) u0)
                         (begin
                             (contract-call? .token-contract transfer tx-sender (get seller item) (get highest-bid item)) ;; Transfer bid amount to the seller
-                            (map-set items { id: id } { seller: (get seller item), price: (get highest-bid item), status: u1, highest-bid: u0, highest-bidder: (get highest-bidder item), end-time: u0 })
+                            (map-set items { id: id } 
+                                { seller: (get seller item), 
+                                  price: (get highest-bid item), 
+                                  status: u1, 
+                                  highest-bid: u0, 
+                                  highest-bidder: (get highest-bidder item), 
+                                  end-time: u0 })
                             (ok true)
                         )
                         (begin
                             ;; If no bids, mark as sold without a transfer
-                            (map-set items { id: id } { seller: (get seller item), price: (get price item), status: u2, highest-bid: u0, highest-bidder: tx-sender, end-time: u0 })
+                            (map-set items { id: id } 
+                                { seller: (get seller item), 
+                                  price: (get price item), 
+                                  status: u2, 
+                                  highest-bid: u0, 
+                                  highest-bidder: tx-sender, 
+                                  end-time: u0 })
                             (ok true)
                         )
                     )
@@ -71,7 +89,13 @@
             (if (is-eq (get status item) u0)
                 (begin
                     (contract-call? .token-contract transfer tx-sender (get seller item) (get price item))
-                    (map-set items { id: id } { seller: (get seller item), price: (get price item), status: u1, highest-bid: u0, highest-bidder: tx-sender, end-time: u0 })
+                    (map-set items { id: id } 
+                        { seller: (get seller item), 
+                          price: (get price item), 
+                          status: u1, 
+                          highest-bid: u0, 
+                          highest-bidder: tx-sender, 
+                          end-time: u0 })
                     (ok true)
                 )
                 (err u2) ;; Item not available for sale
