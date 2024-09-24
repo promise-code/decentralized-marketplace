@@ -23,3 +23,31 @@
         )
     )
 )
+
+
+(define-public (end-auction (id uint))
+    (let ((item-info (map-get? items { id: id })))
+        (match item-info
+            item
+            (if (>= (block-height) (get end-time item))
+                (begin
+                    ;; Transfer item to the highest bidder if there was a bid
+                    (if (> (get highest-bid item) u0)
+                        (begin
+                            (contract-call? .token-contract transfer tx-sender (get seller item) (get highest-bid item)) ;; Transfer bid amount to the seller
+                            (map-set items { id: id } { seller: (get seller item), price: (get highest-bid item), status: u1, highest-bid: u0, highest-bidder: (get highest-bidder item), end-time: u0 })
+                            (ok true)
+                        )
+                        (begin
+                            ;; If no bids, mark as sold without a transfer
+                            (map-set items { id: id } { seller: (get seller item), price: (get price item), status: u2, highest-bid: u0, highest-bidder: tx-sender, end-time: u0 })
+                            (ok true)
+                        )
+                    )
+                )
+                (err u3) ;; Auction is still ongoing
+            )
+            (err u1) ;; Item not found
+        )
+    )
+)
