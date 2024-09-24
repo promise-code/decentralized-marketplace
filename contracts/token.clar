@@ -30,7 +30,7 @@
 )
 
 
-
+;; Refactor `end-auction` for efficient handling of sold and unsold items
 (define-public (end-auction (id uint))
     (let ((item-info (map-get? items { id: id })))
         (match item-info
@@ -57,6 +57,7 @@
         )
     )
 )
+
 
 (define-public (buy-item (id uint))
     (let ((item-info (map-get? items { id: id })))
